@@ -1,0 +1,609 @@
+{# templates/defesa_form/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Avaliação de Trabalhos de Graduação: Defesa</h1>
+        <p>As perguntas com * são obrigatórias</p>
+        <br>
+        {% if errorMessage is not null and errorMessage is not empty %}
+            <div class="alert alert-danger" role="alert">
+                {{ errorMessage }}
+            </div>
+        {% endif %}
+        <form action="{{ path('app_process_defesa') }}" method="post">
+            <div class="mb-3">
+                <h2>1. Título do Trabalho *</h2>
+                <select class="form-select" id="title_defesa" name="title_defesa" required>
+                    <option value="">Selecione um trabalho</option>
+                    {% if trabalhosDefesa is not empty %}
+                        {% for row in trabalhosDefesa %}
+                            <option value="{{ row.id }}">{{ row.titulo }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option value="">Nenhum trabalho encontrado.</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="container mt-5">
+                <h2>2. Tipo do trabalho *</h2>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_trabalho" id="tipo_pesquisa_campo" value="revisao_pesquisa_dados_campo" required>
+                    <label class="form-check-label" for="tipo_pesquisa_campo">
+                        Revisão Bibliográfica + Pesquisa de dados e/ou campo
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_trabalho" id="tipo_plano_negocio" value="revisao_plano_negocio" required>
+                    <label class="form-check-label" for="tipo_plano_negocio">
+                        Revisão Bibliográfica + Plano de Negócio
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_trabalho" id="tipo_desenvolvimento_software" value="revisao_desenvolvimento_software" required>
+                    <label class="form-check-label" for="tipo_desenvolvimento_software">
+                        Revisão Bibliográfica + Desenvolvimento de Software
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_trabalho" id="tipo_estudo_caso" value="revisao_estudo_caso" required>
+                    <label class="form-check-label" for="tipo_estudo_caso">
+                        Revisão Bibliográfica + Estudo de Caso
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_trabalho" id="tipo_somente_revisao" value="somente_revisao" required>
+                    <label class="form-check-label" for="tipo_somente_revisao">
+                        Somente Revisão Bibliográfica (Monografia)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_trabalho" id="tipo_nao_identificado" value="nao_possivel_identificar" required>
+                    <label class="form-check-label" for="tipo_nao_identificado">
+                        Não foi possível identificar
+                    </label>
+                </div>
+            </div>
+            <div class="container mt-5">
+                <h2>3. Aspectos qualitativos da produção acadêmica *</h2>
+                <p>0-Ruim | 5-Excelente</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th class="text-center">0</th>
+                                <th class="text-center">1</th>
+                                <th class="text-center">2</th>
+                                <th class="text-center">3</th>
+                                <th class="text-center">4</th>
+                                <th class="text-center">5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>As normas básicas de formatação foram seguidas?</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form_seguidas" id="form_seguidas_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="form_seguidas_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form_seguidas" id="form_seguidas_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="form_seguidas_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form_seguidas" id="form_seguidas_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="form_seguidas_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form_seguidas" id="form_seguidas_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="form_seguidas_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form_seguidas" id="form_seguidas_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="form_seguidas_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="form_seguidas" id="form_seguidas_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="form_seguidas_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>As citações foram feitas de forma correta?</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="citacoes_corretas" id="citacoes_corretas_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="citacoes_corretas_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="citacoes_corretas" id="citacoes_corretas_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="citacoes_corretas_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="citacoes_corretas" id="citacoes_corretas_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="citacoes_corretas_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="citacoes_corretas" id="citacoes_corretas_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="citacoes_corretas_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="citacoes_corretas" id="citacoes_corretas_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="citacoes_corretas_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="citacoes_corretas" id="citacoes_corretas_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="citacoes_corretas_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>As referências utilizadas são adequadas? (Permitidas referências de livros artigos científicos e documentos de órgãos públicos)</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_adequadas" id="referencias_adequadas_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_adequadas_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_adequadas" id="referencias_adequadas_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_adequadas_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_adequadas" id="referencias_adequadas_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_adequadas_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_adequadas" id="referencias_adequadas_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_adequadas_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_adequadas" id="referencias_adequadas_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_adequadas_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_adequadas" id="referencias_adequadas_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_adequadas_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>O trabalho apresenta sequência lógica, clara e organizada?</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="sequencia_logica" id="sequencia_logica_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="sequencia_logica_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="sequencia_logica" id="sequencia_logica_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="sequencia_logica_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="sequencia_logica" id="sequencia_logica_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="sequencia_logica_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="sequencia_logica" id="sequencia_logica_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="sequencia_logica_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="sequencia_logica" id="sequencia_logica_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="sequencia_logica_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="sequencia_logica" id="sequencia_logica_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="sequencia_logica_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="container mt-5">
+                <h2>4. Conteúdo do trabalho *</h2>
+                <p>0-Ruim | 5-Excelente</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th class="text-center">0</th>
+                                <th class="text-center">1</th>
+                                <th class="text-center">2</th>
+                                <th class="text-center">3</th>
+                                <th class="text-center">4</th>
+                                <th class="text-center">5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>A Introdução apresenta claramente os elementos básicos esperados?</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="introducao_elementos_basicos" id="introducao_elementos_basicos_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="introducao_elementos_basicos_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="introducao_elementos_basicos" id="introducao_elementos_basicos_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="introducao_elementos_basicos_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="introducao_elementos_basicos" id="introducao_elementos_basicos_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="introducao_elementos_basicos_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="introducao_elementos_basicos" id="introducao_elementos_basicos_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="introducao_elementos_basicos_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="introducao_elementos_basicos" id="introducao_elementos_basicos_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="introducao_elementos_basicos_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="introducao_elementos_basicos" id="introducao_elementos_basicos_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="introducao_elementos_basicos_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>O Resumo contempla o conteúdo integral do trabalho?</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="resumo_conteudo_integral" id="resumo_conteudo_integral_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="resumo_conteudo_integral_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="resumo_conteudo_integral" id="resumo_conteudo_integral_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="resumo_conteudo_integral_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="resumo_conteudo_integral" id="resumo_conteudo_integral_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="resumo_conteudo_integral_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="resumo_conteudo_integral" id="resumo_conteudo_integral_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="resumo_conteudo_integral_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="resumo_conteudo_integral" id="resumo_conteudo_integral_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="resumo_conteudo_integral_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="resumo_conteudo_integral" id="resumo_conteudo_integral_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="resumo_conteudo_integral_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A Revisão Bibliográfica está bem desenvolvida?</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="revisao_desenvolvida" id="revisao_desenvolvida_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="revisao_desenvolvida_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="revisao_desenvolvida" id="revisao_desenvolvida_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="revisao_desenvolvida_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="revisao_desenvolvida" id="revisao_desenvolvida_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="revisao_desenvolvida_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="revisao_desenvolvida" id="revisao_desenvolvida_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="revisao_desenvolvida_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="revisao_desenvolvida" id="revisao_desenvolvida_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="revisao_desenvolvida_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="revisao_desenvolvida" id="revisao_desenvolvida_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="revisao_desenvolvida_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A Metodologia utilizada está bem explicitada?</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="metodologia_explicitada" id="metodologia_explicitada_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="metodologia_explicitada_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="metodologia_explicitada" id="metodologia_explicitada_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="metodologia_explicitada_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="metodologia_explicitada" id="metodologia_explicitada_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="metodologia_explicitada_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="metodologia_explicitada" id="metodologia_explicitada_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="metodologia_explicitada_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="metodologia_explicitada" id="metodologia_explicitada_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="metodologia_explicitada_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="metodologia_explicitada" id="metodologia_explicitada_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="metodologia_explicitada_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Os dados da pesquisa (OU do plano de negócios OU do software desenvolvido) são apresentados e discutidos de forma pertinente, organizada e articulada com o referencial teórico? (Trabalhos de revisão bibliográfica, não receberão ponto neste item)</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="dados_pesquisa_apresentados" id="dados_pesquisa_apresentados_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="dados_pesquisa_apresentados_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="dados_pesquisa_apresentados" id="dados_pesquisa_apresentados_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="dados_pesquisa_apresentados_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="dados_pesquisa_apresentados" id="dados_pesquisa_apresentados_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="dados_pesquisa_apresentados_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="dados_pesquisa_apresentados" id="dados_pesquisa_apresentados_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="dados_pesquisa_apresentados_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="dados_pesquisa_apresentados" id="dados_pesquisa_apresentados_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="dados_pesquisa_apresentados_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="dados_pesquisa_apresentados" id="dados_pesquisa_apresentados_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="dados_pesquisa_apresentados_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A Conclusão é coerente com os objetivos propostos?</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="conclusao_coerente" id="conclusao_coerente_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="conclusao_coerente_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="conclusao_coerente" id="conclusao_coerente_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="conclusao_coerente_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="conclusao_coerente" id="conclusao_coerente_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="conclusao_coerente_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="conclusao_coerente" id="conclusao_coerente_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="conclusao_coerente_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="conclusao_coerente" id="conclusao_coerente_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="conclusao_coerente_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="conclusao_coerente" id="conclusao_coerente_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="conclusao_coerente_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>As referências utilizadas são atuais? (últimos 10 anos)</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_atuais" id="referencias_atuais_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_atuais_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_atuais" id="referencias_atuais_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_atuais_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_atuais" id="referencias_atuais_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_atuais_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_atuais" id="referencias_atuais_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_atuais_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_atuais" id="referencias_atuais_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_atuais_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="referencias_atuais" id="referencias_atuais_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="referencias_atuais_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>O trabalho não apresenta erros ortográficos/gramaticais?</td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="erros_ortograficos" id="erros_ortograficos_0" value="0" required>
+                                        <label class="form-check-label visually-hidden" for="erros_ortograficos_0">0</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="erros_ortograficos" id="erros_ortograficos_1" value="1" required>
+                                        <label class="form-check-label visually-hidden" for="erros_ortograficos_1">1</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="erros_ortograficos" id="erros_ortograficos_2" value="2" required>
+                                        <label class="form-check-label visually-hidden" for="erros_ortograficos_2">2</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="erros_ortograficos" id="erros_ortograficos_3" value="3" required>
+                                        <label class="form-check-label visually-hidden" for="erros_ortograficos_3">3</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="erros_ortograficos" id="erros_ortograficos_4" value="4" required>
+                                        <label class="form-check-label visually-hidden" for="erros_ortograficos_4">4</label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="erros_ortograficos" id="erros_ortograficos_5" value="5" required>
+                                        <label class="form-check-label visually-hidden" for="erros_ortograficos_5">5</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="container mt-5">
+                <h2>5. Impressões gerais *</h2>
+                <p>Este trabalho tem potencial para ser publicado, apresentado em eventos científicos ou continuar sendo desenvolvido em nível de pós-graduação?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="potencial_publicacao" id="potencial_publicacao_sim" value="Sim" required>
+                    <label class="form-check-label" for="potencial_publicacao_sim">
+                        Sim
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="potencial_publicacao" id="potencial_publicacao_nao" value="Não" required>
+                    <label class="form-check-label" for="potencial_publicacao_nao">
+                        Não
+                    </label>
+                </div>
+            </div>
+
+            <div class="container mt-5">
+                <h2>6. Observações</h2>
+                <div class="mb-3">
+                    <textarea class="form-control" name="observacoes" id="observacoes" rows="5"></textarea>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
+        </form>
+        <br>
+        <a href="../dashboard.php"><button type="button" class="btn btn-secondary">Início</button></a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+</body>
+</html>

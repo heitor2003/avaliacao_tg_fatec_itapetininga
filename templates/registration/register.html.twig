@@ -1,11 +1,18 @@
-{# templates/home/login.html.twig #}
+{# templates/registration/register.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Cadastro{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
     <div class="container mt-5">
         <h1>Cadastro</h1>
         <br>
-        <form action="register_process.php" method="post">
+        {% if registrationMessage is not null and registrationMessage is not empty %}
+            <div class="alert alert-{{ messageType }}" role="alert">
+                {{ registrationMessage|raw }} {# Usar 'raw' porque 'registrationMessage' pode conter <br> #}
+            </div>
+        {% endif %}
+        <form action="{{ path('app_register_process') }}" method="post">
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" name="email" required>
@@ -25,6 +32,6 @@
             <button type="submit" class="btn btn-primary">Cadastrar</button>
         </form>
         <br>
-        <a href="../index.php"><button type="button" class="btn btn-secondary">Voltar</button></a>
+        <a href="{{ path('app_home') }}"><button type="button" class="btn btn-secondary">Voltar</button></a>
     </div>
-{% block body %}
+{% endblock %}

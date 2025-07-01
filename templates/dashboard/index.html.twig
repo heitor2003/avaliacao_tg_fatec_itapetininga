@@ -1,0 +1,34 @@
+{# templates/dashboard/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %} {# Define o título da página #}
+
+{% block body %} {# Preenche o bloco 'body' definido no base.html.twig #}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Avaliação de Trabalhos de Graduação</h1>
+            {% if userName is not null %}
+                <span class="text-muted">Bem-vindo(a), {{ userName }}!</span>
+            {% endif %}
+        </div>
+
+        <p class="lead">Selecione uma das opções abaixo para iniciar a avaliação.</p>
+        <div class="mb-4">
+            {# Assumindo rotas para os formulários de quali e defesa #}
+            <a href="{{ path('app_quali_form') }}" class="btn btn-info me-2">Qualificação</a>
+            <a href="{{ path('app_defesa_form') }}" class="btn btn-success">Defesa</a>
+        </div>
+
+        <h2>Avaliações Registradas</h2>
+        <div class="mb-4">
+            {# Assumindo rotas para as páginas de visualização de avaliações #}
+            <a href="{{ path('app_aval_quali') }}" class="btn btn-info me-2">Avaliações da Qualificação</a>
+            <a href="{{ path('app_aval_defesa') }}" class="btn btn-success">Avaliações da Defesa</a>
+        </div>
+
+        <div class="mt-5 text-end">
+            {# Assumindo rota para o logout #}
+            <a href="{{ path('app_logout') }}" class="btn btn-danger">Sair</a>
+        </div>
+    </div>
+{% endblock %}

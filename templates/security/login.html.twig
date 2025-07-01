@@ -1,0 +1,30 @@
+{# templates/security/login.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %} {# Define o título da página #}
+
+{% block body %} {# Preenche o bloco 'body' definido no base.html.twig #}
+    <div class="container mt-5">
+        <h1>Login</h1>
+        <br>
+        {% if loginError is not null and loginError is not empty %}
+            <div class="alert alert-danger" role="alert">
+                {{ loginError }}
+            </div>
+        {% endif %}
+        <form action="{{ path('app_login_process') }}" method="post">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Senha</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Entrar</button>
+        </form>
+        <br>
+        <p>Não tem uma conta? <a href="{{ path('app_register') }}">Cadastre-se aqui</a>.</p>
+        <a href="{{ path('app_home') }}"><button type="button" class="btn btn-secondary">Voltar</button></a>
+    </div>
+{% endblock %}  

@@ -1,0 +1,73 @@
+{# templates/aval_defesa/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %} {# Define o título da página #}
+
+{% block body %} {# Preenche o bloco 'body' definido no base.html.twig #}
+    <div class="container mt-5">
+        <h1>Avaliações de Defesa</h1>
+        <br>
+        {% if errorMessage is not null and errorMessage is not empty %}
+            <div class="alert alert-danger" role="alert">
+                {{ errorMessage }}
+            </div>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ID Avaliação</th>
+                        <th>Título do Trabalho</th>
+                        <th>Tipo do Trabalho</th>
+                        <th>Nota Final</th>
+                        <th>Formatação</th>
+                        <th>Citações</th>
+                        <th>Referências Adequadas</th>
+                        <th>Sequência Lógica</th>
+                        <th>Introdução</th>
+                        <th>Resumo</th>
+                        <th>Revisão Desenvolvida</th>
+                        <th>Metodologia Explicitada</th>
+                        <th>Dados Pesquisa</th>
+                        <th>Conclusão Coerente</th>
+                        <th>Referências Atuais</th>
+                        <th>Erros Ortográficos</th>
+                        <th>Potencial Publicação</th>
+                        <th>Observações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if avaliacoesDefesa is not empty %}
+                        {% for row in avaliacoesDefesa %}
+                            <tr>
+                                <td>{{ row.id }}</td>
+                                <td>{{ row.titulo }}</td>
+                                <td>{{ row.tipo_trabalho }}</td>
+                                <td>{{ row.nota_final }}</td>
+                                <td>{{ row.form_seguidas }}</td>
+                                <td>{{ row.citacoes_corretas }}</td>
+                                <td>{{ row.referencias_adequadas }}</td>
+                                <td>{{ row.sequencia_logica }}</td>
+                                <td>{{ row.introducao_elementos_basicos }}</td>
+                                <td>{{ row.resumo_conteudo_integral }}</td>
+                                <td>{{ row.revisao_desenvolvida }}</td>
+                                <td>{{ row.metodologia_explicitada }}</td>
+                                <td>{{ row.dados_pesquisa_apresentados }}</td>
+                                <td>{{ row.conclusao_coerente }}</td>
+                                <td>{{ row.referencias_atuais }}</td>
+                                <td>{{ row.erros_ortograficos }}</td>
+                                <td>{{ row.potencial_publicacao }}</td>
+                                <td>{{ row.observacoes|nl2br }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan='18' class='text-center'>Nenhuma avaliação de defesa encontrada.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+        {# Link de volta ao dashboard. Assumindo uma rota 'app_dashboard' #}
+        <a href="{{ path('app_dashboard') }}"><button type="button" class="btn btn-secondary">Início</button></a>
+    </div>
+{% endblock %}

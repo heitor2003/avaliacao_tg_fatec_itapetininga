@@ -1,0 +1,74 @@
+{# templates/aval_quali/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Avaliações de Qualificação</h1>
+    <br>
+    {% if errorMessage is not null and errorMessage is not empty %}
+        <div class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>ID Avaliação</th>
+                    <th>Título do Trabalho</th>
+                    <th>Tipo do Trabalho</th>
+                    <th>Nota Final</th>
+                    <th>Capa</th>
+                    <th>Folha de Rosto</th>
+                    <th>Sumário</th>
+                    <th>Referências</th>
+                    <th>Delimitação Tema</th>
+                    <th>Justificativa</th>
+                    <th>Objetivos</th>
+                    <th>Problematização</th>
+                    <th>Hipótese</th>
+                    <th>Metodologia</th>
+                    <th>Revisão Bibliográfica</th>
+                    <th>Aspectos Qualitativos</th>
+                    <th>Consonância Plano</th>
+                    <th>Justificativa Consonância</th>
+                    <th>Considerações Finais</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if avaliacoesQuali is not empty %}
+                    {% for row in avaliacoesQuali %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td>{{ row.titulo }}</td>
+                            <td>{{ row.tipo_trabalho }}</td>
+                            <td>{{ row.nota_final }}</td>
+                            <td>{{ row.capa }}</td>
+                            <td>{{ row.folha_de_rosto }}</td>
+                            <td>{{ row.sumario }}</td>
+                            <td>{{ row.referencias }}</td>
+                            <td>{{ row.delimitacao_do_tema }}</td>
+                            <td>{{ row.justificativa }}</td>
+                            <td>{{ row.objetivos }}</td>
+                            <td>{{ row.problematizacao }}</td>
+                            <td>{{ row.hipotese }}</td>
+                            <td>{{ row.metodologia }}</td>
+                            <td>{{ row.revisao_bibliografica }}</td>
+                            <td>{{ row.aspectos_qualitativos }}</td>
+                            <td>{{ row.consonancia_plano }}</td>
+                            <td>{{ row.justificativa_consonancia|nl2br }}</td>
+                            <td>{{ row.consideracoes_finais|nl2br }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan='19' class='text-center'>Nenhuma avaliação de qualificação encontrada.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <a href="{{ path('app_dashboard') }}"><button type="button" class="btn btn-secondary">Início</button></a>
+</div>
+{% endblock %}
