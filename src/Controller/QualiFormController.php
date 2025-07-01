@@ -5,23 +5,26 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Psr\Log\LoggerInterface; // Para registrar erros
-
-// Lembre-se: em um projeto Symfony real, você usaria o Doctrine ORM ou um serviço injetável para a conexão com o BD.
+use Psr\Log\LoggerInterface;
+use Doctrine\ORM\EntityManagerInterface; // Importa a interface do Entity Manager
+use App\Entity\TrabalhoQuali; // Importa sua entidade TrabalhoQuali
 
 class QualiFormController extends AbstractController
 {
     private $logger;
+    private $entityManager; // Declara a propriedade para o Entity Manager
 
-    public function __construct(LoggerInterface $logger)
+    // Injeta LoggerInterface e EntityManagerInterface no construtor
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager)
     {
         $this->logger = $logger;
+        $this->entityManager = $entityManager; // Atribui o Entity Manager à propriedade da classe
     }
 
     #[Route('/quali-form', name: 'app_quali_form')]
     public function index(): Response
     {
-        // Verifica se o usuário está logado
+        // Verifica se o usuário está logado (mantendo sua lógica de sessão por enquanto)
         if (!isset($_SESSION['user_id'])) {
             return $this->redirectToRoute('app_login'); // Redireciona para a rota de login
         }
@@ -29,29 +32,27 @@ class QualiFormController extends AbstractController
         $trabalhosQuali = [];
         $errorMessage = null;
 
-        // Lógica de conexão e consulta ao banco de dados para o dropdown
-        require_once __DIR__ . '/../Utils/db_con.php';
+        try {
+            // PASSO 8: Interagir com o banco de dados via Doctrine ORM
+            // Obtém o repositório da entidade TrabalhoQuali
+            $trabalhoQualiRepository = $this->entityManager->getRepository(TrabalhoQuali::class);
 
-        if ($db_conn) {
-            $query = "SELECT id, titulo FROM trabalhos_quali ORDER BY titulo ASC";
-            $result = pg_query($db_conn, $query);
+            // Busca os dados (id e titulo) ordenados por titulo
+            // Isso retornará um array de objetos TrabalhoQuali
+            $trabalhosQuali = $trabalhoQualiRepository->findBy([], ['titulo' => 'ASC']);
 
-            if ($result) {
-                $trabalhosQuali = pg_fetch_all($result);
-                pg_free_result($result);
-            } else {
-                $errorMessage = "Erro ao carregar títulos: " . pg_last_error($db_conn);
-                $this->logger->error('Database query failed for quali_form: ' . pg_last_error($db_conn));
-            }
-            pg_close($db_conn);
-        } else {
-            $errorMessage = "Não foi possível conectar ao banco de dados.";
-            $this->logger->error('Database connection failed for quali_form: ' . pg_last_error());
+            // O template Twig pode acessar propriedades de objetos diretamente (ex: row.id, row.titulo),
+            // assumindo que sua entidade TrabalhoQuali possui os métodos getId() e getTitulo().
+
+        } catch (\Exception $e) {
+            // Captura qualquer exceção que possa ocorrer durante a interação com o Doctrine
+            $errorMessage = "Erro ao carregar títulos: " . $e->getMessage();
+            $this->logger->error('Doctrine query failed in QualiFormController: ' . $e->getMessage(), ['exception' => $e]);
         }
 
         return $this->render('quali_form/index.html.twig', [
             'title' => 'Avaliação de Trabalhos de Graduação - Qualificação',
-            'trabalhosQuali' => $trabalhosQuali,
+            'trabalhosQuali' => $trabalhosQuali, // Passa o array de objetos TrabalhoQuali
             'errorMessage' => $errorMessage,
         ]);
     }

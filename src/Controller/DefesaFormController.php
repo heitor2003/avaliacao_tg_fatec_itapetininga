@@ -5,52 +5,39 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Psr\Log\LoggerInterface; // Para registrar erros
-
-// Lembre-se: em um projeto Symfony real, você usaria o Doctrine ORM ou um serviço injetável para a conexão com o BD.
+use Psr\Log\LoggerInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\TrabalhoDefesa;
 
 class DefesaFormController extends AbstractController
 {
     private $logger;
+    private $entityManager;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager)
     {
         $this->logger = $logger;
+        $this->entityManager = $entityManager;
     }
 
     #[Route('/defesa-form', name: 'app_defesa_form')]
     public function index(): Response
     {
-        // Verifica se o usuário está logado
         if (!isset($_SESSION['user_id'])) {
-            return $this->redirectToRoute('app_login'); // Redireciona para a rota de login
+            return $this->redirectToRoute('app_login');
         }
 
         $trabalhosDefesa = [];
         $errorMessage = null;
 
-        // Lógica de conexão e consulta ao banco de dados para o dropdown
-        $host = "localhost";
-        $dbname = "cta";
-        $user = "postgres";
-        $password = "postgres";
-        $db_conn = @pg_connect("host=$host dbname=$dbname user=$user password=$password");
+        try {
+            $trabalhoDefesaRepository = $this->entityManager->getRepository(TrabalhoDefesa::class);
 
-        if ($db_conn) {
-            $query = "SELECT id, titulo FROM trabalhos_defesa ORDER BY titulo ASC";
-            $result = pg_query($db_conn, $query);
+            $trabalhosDefesa = $trabalhoDefesaRepository->findBy([], ['titulo' => 'ASC']);
 
-            if ($result) {
-                $trabalhosDefesa = pg_fetch_all($result);
-                pg_free_result($result);
-            } else {
-                $errorMessage = "Erro ao carregar títulos: " . pg_last_error($db_conn);
-                $this->logger->error('Database query failed for defesa_form: ' . pg_last_error($db_conn));
-            }
-            pg_close($db_conn);
-        } else {
-            $errorMessage = "Não foi possível conectar ao banco de dados.";
-            $this->logger->error('Database connection failed for defesa_form: ' . pg_last_error());
+        } catch (\Exception $e) {
+            $errorMessage = "Erro ao carregar títulos: " . $e->getMessage();
+            $this->logger->error('Doctrine query failed in DefesaFormController: ' . $e->getMessage(), ['exception' => $e]);
         }
 
         return $this->render('defesa_form/index.html.twig', [

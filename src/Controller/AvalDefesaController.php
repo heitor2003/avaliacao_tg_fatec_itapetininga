@@ -5,89 +5,81 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Psr\Log\LoggerInterface; // Para registrar erros
-
-// Certifique-se de que sua conexão com o banco de dados está disponível.
-// Em um projeto Symfony real, você usaria o Doctrine ORM ou um serviço de banco de dados personalizado injetável.
-// Para este exemplo, vou incluir a lógica de conexão direta para corresponder ao seu db_con.php.
-// MAS, para um projeto Symfony bem estruturado, você DEVE criar um serviço para isso.
+use Psr\Log\LoggerInterface;
+use Doctrine\ORM\EntityManagerInterface; // Importa a interface do Entity Manager
+use App\Entity\PontuacaoDefesa; // Importa sua entidade PontuacaoDefesa
+use App\Entity\TrabalhoDefesa; // Importa sua entidade TrabalhoDefesa (para o join)
 
 class AvalDefesaController extends AbstractController
 {
-    private $logger; // Variável para o logger
+    private $logger;
+    private $entityManager; // Declara a propriedade para o Entity Manager
 
-    // Injeção de dependência para o logger
-    public function __construct(LoggerInterface $logger)
+    // Injeta LoggerInterface e EntityManagerInterface no construtor
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager)
     {
         $this->logger = $logger;
+        $this->entityManager = $entityManager; // Atribui o Entity Manager à propriedade da classe
     }
 
     #[Route('/avaliacoes-defesa', name: 'app_aval_defesa')]
     public function index(): Response
     {
-        // Verifica se o usuário está logado
-        // Em um projeto Symfony com Security Bundle, você usaria isGranted('ROLE_USER') ou anotações como #[IsGranted('ROLE_USER')]
-        // Para portar diretamente sua lógica de sessão:
+        // Verifica se o usuário está logado (mantendo sua lógica de sessão por enquanto)
         if (!isset($_SESSION['user_id'])) {
-             // Redireciona para a rota de login
-            return $this->redirectToRoute('app_login'); // Assumindo que você tem uma rota nomeada 'app_login'
+            return $this->redirectToRoute('app_login'); // Redireciona para a rota de login
         }
 
         $avaliacoesDefesa = [];
         $errorMessage = null;
 
-        // Lógica de conexão e consulta ao banco de dados (portada do seu db_con.php e do template)
-        require_once __DIR__ . '/../Utils/db_con.php';
+        try {
+            // PASSO 8: Interagir com o banco de dados via Doctrine ORM
+            // Obtém o repositório da entidade PontuacaoDefesa
+            $pontuacaoDefesaRepository = $this->entityManager->getRepository(PontuacaoDefesa::class);
 
-        if ($db_conn) {
-            $query = "SELECT
-                        pd.id,
-                        t.titulo,
-                        pd.tipo_trabalho,
-                        pd.form_seguidas,
-                        pd.citacoes_corretas,
-                        pd.referencias_adequadas,
-                        pd.sequencia_logica,
-                        pd.introducao_elementos_basicos,
-                        pd.resumo_conteudo_integral,
-                        pd.revisao_desenvolvida,
-                        pd.metodologia_explicitada,
-                        pd.dados_pesquisa_apresentados,
-                        pd.conclusao_coerente,
-                        pd.referencias_atuais,
-                        pd.erros_ortograficos,
-                        pd.potencial_publicacao,
-                        pd.observacoes,
-                        pd.nota_final
-                    FROM
-                        pontuacao_defesa pd
-                    JOIN
-                        trabalhos_defesa t ON pd.id_trabalho = t.id
-                    ORDER BY
-                        t.titulo ASC;";
+            // Constrói uma query DQL (Doctrine Query Language) para buscar os dados
+            // Usamos aliases (AS) para garantir que os nomes das chaves no array final
+            // correspondam aos nomes esperados no seu template Twig (snake_case).
+            $queryBuilder = $pontuacaoDefesaRepository->createQueryBuilder('pd')
+                ->select(
+                    'pd.id',
+                    't.titulo',
+                    'pd.tipoTrabalho AS tipo_trabalho', // Assumindo propriedade 'tipoTrabalho' na entidade e coluna 'tipo_trabalho' no BD
+                    'pd.formSeguidas AS form_seguidas',
+                    'pd.citacoesCorretas AS citacoes_corretas',
+                    'pd.referenciasAdequadas AS referencias_adequadas',
+                    'pd.sequenciaLogica AS sequencia_logica',
+                    'pd.introducaoElementosBasicos AS introducao_elementos_basicos',
+                    'pd.resumoConteudoIntegral AS resumo_conteudo_integral',
+                    'pd.revisaoDesenvolvida AS revisao_desenvolvida',
+                    'pd.metodologiaExplicitada AS metodologia_explicitada',
+                    'pd.dadosPesquisaApresentados AS dados_pesquisa_apresentados',
+                    'pd.conclusaoCoerente AS conclusao_coerente',
+                    'pd.referenciasAtuais AS referencias_atuais',
+                    'pd.errosOrtograficos AS erros_ortograficos',
+                    'pd.potencialPublicacao AS potencial_publicacao',
+                    'pd.observacoes', // Assumindo 'observacoes' já é snake_case na entidade/BD
+                    'pd.notaFinal AS nota_final' // Assumindo propriedade 'notaFinal' na entidade e coluna 'nota_final' no BD
+                )
+                // Realiza o JOIN com a entidade TrabalhoDefesa (assumindo que há um relacionamento 'trabalho' na PontuacaoDefesa)
+                ->join('pd.trabalho', 't')
+                ->orderBy('t.titulo', 'ASC');
 
-            $result = pg_query($db_conn, $query);
+            // Executa a query e obtém os resultados como um array de arrays associativos
+            $avaliacoesDefesa = $queryBuilder->getQuery()->getResult();
 
-            if ($result) {
-                if (pg_num_rows($result) > 0) {
-                    $avaliacoesDefesa = pg_fetch_all($result);
-                }
-                pg_free_result($result);
-            } else {
-                $errorMessage = "Erro ao carregar dados: " . pg_last_error($db_conn);
-                $this->logger->error('Database query failed: ' . pg_last_error($db_conn)); // Registra o erro
-            }
-            pg_close($db_conn);
-        } else {
-            $errorMessage = "Não foi possível conectar ao banco de dados.";
-            $this->logger->error('Database connection failed: ' . pg_last_error()); // Registra o erro
+        } catch (\Exception $e) {
+            // Captura qualquer exceção que possa ocorrer durante a interação com o Doctrine
+            $errorMessage = "Erro ao carregar dados do banco de dados: " . $e->getMessage();
+            $this->logger->error('Doctrine query failed in AvalDefesaController: ' . $e->getMessage(), ['exception' => $e]);
         }
 
         // Renderiza o template Twig, passando os dados
         return $this->render('aval_defesa/index.html.twig', [
-            'title' => 'Avaliações de Defesa', // Título para o bloco 'title' no base.html.twig
-            'avaliacoesDefesa' => $avaliacoesDefesa, // Dados da consulta
-            'errorMessage' => $errorMessage, // Mensagem de erro
+            'title' => 'Avaliações de Defesa',
+            'avaliacoesDefesa' => $avaliacoesDefesa,
+            'errorMessage' => $errorMessage,
         ]);
     }
 }

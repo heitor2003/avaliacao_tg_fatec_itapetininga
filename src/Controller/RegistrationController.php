@@ -5,30 +5,31 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface; // Importe SessionInterface
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Psr\Log\LoggerInterface; // Para registrar erros
-
-// Em um projeto Symfony real, você injetaria o EntityManager ou um serviço de BD para persistência.
+use Psr\Log\LoggerInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use App\Entity\User;
 
 class RegistrationController extends AbstractController
 {
     private $logger;
+    private $entityManager;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager)
     {
         $this->logger = $logger;
+        $this->entityManager = $entityManager;
     }
 
-    // Rota para exibir o formulário de cadastro
     #[Route('/cadastro', name: 'app_register')]
     public function register(SessionInterface $session): Response
     {
-        // Para exibir mensagens de sucesso/erro de um processamento anterior (se houver)
         $registrationMessage = null;
         if ($session->has('registration_message')) {
             $registrationMessage = $session->get('registration_message');
-            $session->remove('registration_message'); // Limpa a mensagem após exibi-la
+            $session->remove('registration_message');
         }
         $messageType = $session->has('registration_message_type') ? $session->get('registration_message_type') : 'info';
         $session->remove('registration_message_type');
@@ -41,7 +42,6 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    // Rota para processar o formulário de cadastro (seu register_process.php)
     #[Route('/register_process', name: 'app_register_process', methods: ['POST'])]
     public function registerProcess(Request $request, SessionInterface $session): Response
     {
@@ -69,42 +69,41 @@ class RegistrationController extends AbstractController
         }
 
         if (empty($errors)) {
+            $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+            if ($existingUser) {
+                $errors[] = "Erro no cadastro: Este email já está em uso.";
+            }
+        }
+
+        if (empty($errors)) {
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-            // Conexão com o banco de dados - portando diretamente sua lógica
-            require_once __DIR__ . '/../Utils/db_con.php';
+            try {
+                $user = new User();
+                $user->setEmail($email);
+                $user->setFullName($full_name);
+                $user->setPasswordHash($password_hash);
 
-            if ($db_conn) {
-                pg_query($db_conn, "BEGIN");
-                $query = "INSERT INTO users (email, full_name, password_hash) VALUES ($1, $2, $3)";
-                $result = pg_query_params($db_conn, $query, array($email, $full_name, $password_hash));
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
 
-                if ($result) {
-                    pg_query($db_conn, "COMMIT");
-                    $session->set('registration_message', "Cadastro realizado com sucesso! Você já pode fazer login.");
-                    $session->set('registration_message_type', "success");
-                } else {
-                    pg_query($db_conn, "ROLLBACK");
-                    $pg_error = pg_last_error($db_conn);
-                    if (strpos($pg_error, 'duplicate key value violates unique constraint "users_email_key"') !== false) {
-                        $session->set('registration_message', "Erro no cadastro: Este email já está em uso.");
-                    } else {
-                        $session->set('registration_message', "Erro no cadastro: " . $pg_error);
-                    }
-                    $session->set('registration_message_type', "danger");
-                    $this->logger->error('Registration failed: ' . $pg_error);
-                }
-                pg_close($db_conn);
-            } else {
-                $session->set('registration_message', "Erro ao conectar ao banco de dados.");
+                $session->set('registration_message', "Cadastro realizado com sucesso! Você já pode fazer login.");
+                $session->set('registration_message_type', "success");
+
+            } catch (UniqueConstraintViolationException $e) {
+                $session->set('registration_message', "Erro no cadastro: Este email já está em uso.");
                 $session->set('registration_message_type', "danger");
-                $this->logger->error('Database connection failed for registration: ' . pg_last_error());
+                $this->logger->error('Registration failed (duplicate email): ' . $e->getMessage(), ['exception' => $e]);
+            } catch (\Exception $e) {
+                $session->set('registration_message', "Erro no cadastro: " . $e->getMessage());
+                $session->set('registration_message_type', "danger");
+                $this->logger->error('Registration failed: ' . $e->getMessage(), ['exception' => $e]);
             }
         } else {
             $session->set('registration_message', "Erros de validação:<br>" . implode("<br>", $errors));
             $session->set('registration_message_type', "danger");
         }
 
-        return $this->redirectToRoute('app_register'); // Redireciona de volta para a página de cadastro
+        return $this->redirectToRoute('app_register');
     }
 }
