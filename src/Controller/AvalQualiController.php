@@ -30,12 +30,8 @@ class AvalQualiController extends AbstractController
         $errorMessage = null;
 
         // Lógica de conexão e consulta ao banco de dados
-        $host = "localhost";
-        $dbname = "cta";
-        $user = "postgres";
-        $password = "postgres";
-        $db_conn = @pg_connect("host=$host dbname=$dbname user=$user password=$password");
-
+        require_once __DIR__ . '/../Utils/db_con.php';
+        
         if ($db_conn) {
             $query = "SELECT
                         pq.id,

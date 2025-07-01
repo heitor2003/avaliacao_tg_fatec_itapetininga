@@ -30,11 +30,7 @@ class QualiFormController extends AbstractController
         $errorMessage = null;
 
         // Lógica de conexão e consulta ao banco de dados para o dropdown
-        $host = "localhost";
-        $dbname = "cta";
-        $user = "postgres";
-        $password = "postgres";
-        $db_conn = @pg_connect("host=$host dbname=$dbname user=$user password=$password");
+        require_once __DIR__ . '/../Utils/db_con.php';
 
         if ($db_conn) {
             $query = "SELECT id, titulo FROM trabalhos_quali ORDER BY titulo ASC";

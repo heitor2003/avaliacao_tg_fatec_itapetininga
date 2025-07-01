@@ -72,11 +72,7 @@ class RegistrationController extends AbstractController
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
             // Conexão com o banco de dados - portando diretamente sua lógica
-            $host = "localhost";
-            $dbname = "cta";
-            $user = "postgres";
-            $password_db = "postgres"; // Renomeado para evitar conflito com $password do formulário
-            $db_conn = @pg_connect("host=$host dbname=$dbname user=$user password=$password_db");
+            require_once __DIR__ . '/../Utils/db_con.php';
 
             if ($db_conn) {
                 pg_query($db_conn, "BEGIN");

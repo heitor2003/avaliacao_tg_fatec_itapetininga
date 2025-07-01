@@ -34,11 +34,8 @@ class SecurityController extends AbstractController
         // Certifique-se de que sua conexão com o banco de dados está disponível.
         // Em um projeto Symfony real, você injetaria um serviço de banco de dados ou usaria Doctrine.
         // Para este exemplo, vou incluir a lógica de conexão direta para corresponder ao seu db_con.php.
-        $host = "localhost";
-        $dbname = "cta";
-        $user = "postgres";
-        $password = "postgres";
-        $db_conn = @pg_connect("host=$host dbname=$dbname user=$user password=$password");
+        require_once __DIR__ . '/../Utils/db_con.php';
+
 
         if (!$db_conn) {
             $session->set('login_error', "Erro ao conectar ao banco de dados.");

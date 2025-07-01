@@ -37,11 +37,7 @@ class AvalDefesaController extends AbstractController
         $errorMessage = null;
 
         // Lógica de conexão e consulta ao banco de dados (portada do seu db_con.php e do template)
-        $host = "localhost";
-        $dbname = "cta";
-        $user = "postgres";
-        $password = "postgres";
-        $db_conn = @pg_connect("host=$host dbname=$dbname user=$user password=$password"); // O '@' para suprimir avisos e tratá-los
+        require_once __DIR__ . '/../Utils/db_con.php';
 
         if ($db_conn) {
             $query = "SELECT
