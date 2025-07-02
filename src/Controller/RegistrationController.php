@@ -76,13 +76,13 @@ class RegistrationController extends AbstractController
         }
 
         if (empty($errors)) {
-            $password_hash = password_hash($password, PASSWORD_DEFAULT);
+            $password = password_hash($password, PASSWORD_DEFAULT);
 
             try {
                 $user = new User();
                 $user->setEmail($email);
                 $user->setFullName($full_name);
-                $user->setPasswordHash($password_hash);
+                $user->setPassword($password);
 
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();

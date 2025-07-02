@@ -1,0 +1,46 @@
+{# templates/work_insertion/form.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Inserir Novo Trabalho</h1>
+        <br>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <form action="{{ path('app_process_insert_work') }}" method="post">
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Título do Trabalho *</label>
+                <input type="text" class="form-control" id="titulo" name="titulo" required>
+            </div>
+
+            <div class="mb-3">
+                <h2>Tipo de Trabalho *</h2>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_trabalho" id="tipo_quali" value="quali" required>
+                    <label class="form-check-label" for="tipo_quali">Qualificação</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_trabalho" id="tipo_defesa" value="defesa" required>
+                    <label class="form-check-label" for="tipo_defesa">Defesa</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Inserir Trabalho</button>
+        </form>
+        <br>
+        <a href="{{ path('app_dashboard') }}"><button type="button" class="btn btn-secondary">Voltar ao Dashboard</button></a>
+    </div>
+{% endblock %}
