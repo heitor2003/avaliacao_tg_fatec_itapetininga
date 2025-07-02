@@ -25,10 +25,6 @@ class WorkInsertionController extends AbstractController
     #[Route('/inserir-trabalho', name: 'app_insert_work')]
     public function insertForm(): Response
     {
-        if (!isset($_SESSION['user_id'])) {
-            return $this->redirectToRoute('app_login');
-        }
-
         return $this->render('work_insertion/form.html.twig', [
             'title' => 'Inserir Novo Trabalho',
         ]);
@@ -37,10 +33,6 @@ class WorkInsertionController extends AbstractController
     #[Route('/processar-insercao-trabalho', name: 'app_process_insert_work', methods: ['POST'])]
     public function processInsertion(Request $request): Response
     {
-        if (!isset($_SESSION['user_id'])) {
-            return $this->redirectToRoute('app_login');
-        }
-
         $titulo = trim($request->request->get('titulo'));
         $tipoTrabalho = $request->request->get('tipo_trabalho');
 
