@@ -26,10 +26,10 @@ security:
             provider: app_user_provider # CORRIGIDO: Agora é um escalar (o nome do provedor)
 
             # Configurações de autenticação e logout para este firewall
-            # (MOVidas da seção duplicada/mal posicionada abaixo)
             form_login:
                 login_path: app_login
                 check_path: app_login
+                default_target_path: app_dashboard # <-- ADICIONADO: Redireciona para o dashboard após o login
                 # Opcional: Ativar proteção CSRF para o formulário de login
                 # enable_csrf: true
 

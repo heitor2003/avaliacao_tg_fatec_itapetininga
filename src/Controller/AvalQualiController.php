@@ -24,10 +24,6 @@ class AvalQualiController extends AbstractController
     #[Route('/avaliacoes-qualificacao', name: 'app_aval_quali')]
     public function index(): Response
     {
-        if (!isset($_SESSION['user_id'])) {
-            return $this->redirectToRoute('app_login');
-        }
-
         $avaliacoesQuali = [];
         $errorMessage = null;
 

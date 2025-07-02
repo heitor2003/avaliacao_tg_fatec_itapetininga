@@ -22,12 +22,7 @@ class DefesaFormController extends AbstractController
 
     #[Route('/defesa-form', name: 'app_defesa_form')]
     public function index(): Response
-    {
-        if (!isset($_SESSION['user_id'])) {
-            return $this->redirectToRoute('app_login');
-        }
-
-        $trabalhosDefesa = [];
+    {        $trabalhosDefesa = [];
         $errorMessage = null;
 
         try {
