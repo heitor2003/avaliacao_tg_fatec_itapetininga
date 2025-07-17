@@ -12,6 +12,10 @@
                 {{ error.messageKey|trans(error.messageData, 'security') }}
             </div>
         {% endif %}
+
+        <a href="{{ path('knpu_oauth2_client_connect', {service: 'google'}) }}" class="btn btn-danger btn-lg btn-block">
+            Login com Google
+        </a>
         
         <form action="{{ path('app_login') }}" method="post">
             <div class="mb-3">
