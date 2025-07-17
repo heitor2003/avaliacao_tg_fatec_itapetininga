@@ -14,271 +14,268 @@ class PontuacaoQuali
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?TrabalhoQuali $id_trabalho = null;
+    // NOVO: Relacionamento ManyToOne com TrabalhoQuali
+    #[ORM\ManyToOne(targetEntity: TrabalhoQuali::class)]
+    #[ORM\JoinColumn(name: 'id_trabalho', referencedColumnName: 'id', nullable: false)] // Ajuste 'id_trabalho' para o nome da sua FK no BD
+    private ?TrabalhoQuali $trabalho = null; // Nome da propriedade que será usada na DQL
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $capa = null;
+    // CORRIGIDO: Propriedade em camelCase e tipo
+    #[ORM\Column(length: 255)]
+    private ?string $tipoTrabalho = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $folha_de_rosto = null;
+    // CORRIGIDO: Propriedades em camelCase e tipo float para decimais
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $capa = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $sumario = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $folhaDeRosto = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
-    private ?string $referencias = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $sumario = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $delimitacao_do_tema = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $referencias = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $justificativa = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $delimitacaoDoTema = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $objetivos = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $justificativa = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $problematizacao = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $objetivos = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $hipotese = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $problematizacao = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $metodologia = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $hipotese = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $revisao_bibliografica = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $metodologia = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $aspectos_qualitativos = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $revisaoBibliografica = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private ?float $aspectosQualitativos = null;
 
     #[ORM\Column(length: 3)]
-    private ?string $consonacia_plano = null;
-
-    #[ORM\Column(length: 400, nullable: true)]
-    private ?string $justificativa_consonancia = null;
+    private ?string $consonanciaPlano = null;
 
     #[ORM\Column(length: 500, nullable: true)]
-    private ?string $consideracoes_finais = null;
+    private ?string $justificativaConsonancia = null;
+
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $consideracoesFinais = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $nota_final = null;
+    private ?float $notaFinal = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): static
+    // NOVO: Getter para a associação 'trabalho'
+    public function getTrabalho(): ?TrabalhoQuali
     {
-        $this->id = $id;
+        return $this->trabalho;
+    }
 
+    // NOVO: Setter para a associação 'trabalho'
+    public function setTrabalho(?TrabalhoQuali $trabalho): static
+    {
+        $this->trabalho = $trabalho;
         return $this;
     }
 
-    public function getIdTrabalho(): ?TrabalhoQuali
+    // Getters e Setters para as propriedades corrigidas (camelCase e float)
+
+    public function getTipoTrabalho(): ?string
     {
-        return $this->id_trabalho;
+        return $this->tipoTrabalho;
     }
 
-    public function setIdTrabalho(?TrabalhoQuali $id_trabalho): static
+    public function setTipoTrabalho(string $tipoTrabalho): static
     {
-        $this->id_trabalho = $id_trabalho;
-
+        $this->tipoTrabalho = $tipoTrabalho;
         return $this;
     }
 
-    public function getCapa(): ?string
+    public function getCapa(): ?float
     {
         return $this->capa;
     }
 
-    public function setCapa(string $capa): static
+    public function setCapa(float $capa): static
     {
         $this->capa = $capa;
-
         return $this;
     }
 
-    public function getFolhaDeRosto(): ?string
+    public function getFolhaDeRosto(): ?float
     {
-        return $this->folha_de_rosto;
+        return $this->folhaDeRosto;
     }
 
-    public function setFolhaDeRosto(string $folha_de_rosto): static
+    public function setFolhaDeRosto(float $folhaDeRosto): static
     {
-        $this->folha_de_rosto = $folha_de_rosto;
-
+        $this->folhaDeRosto = $folhaDeRosto;
         return $this;
     }
 
-    public function getSumario(): ?string
+    public function getSumario(): ?float
     {
         return $this->sumario;
     }
 
-    public function setSumario(string $sumario): static
+    public function setSumario(float $sumario): static
     {
         $this->sumario = $sumario;
-
         return $this;
     }
 
-    public function getReferencias(): ?string
+    public function getReferencias(): ?float
     {
         return $this->referencias;
     }
 
-    public function setReferencias(string $referencias): static
+    public function setReferencias(float $referencias): static
     {
         $this->referencias = $referencias;
-
         return $this;
     }
 
-    public function getDelimitacaoDoTema(): ?string
+    public function getDelimitacaoDoTema(): ?float
     {
-        return $this->delimitacao_do_tema;
+        return $this->delimitacaoDoTema;
     }
 
-    public function setDelimitacaoDoTema(string $delimitacao_do_tema): static
+    public function setDelimitacaoDoTema(float $delimitacaoDoTema): static
     {
-        $this->delimitacao_do_tema = $delimitacao_do_tema;
-
+        $this->delimitacaoDoTema = $delimitacaoDoTema;
         return $this;
     }
 
-    public function getJustificativa(): ?string
+    public function getJustificativa(): ?float
     {
         return $this->justificativa;
     }
 
-    public function setJustificativa(string $justificativa): static
+    public function setJustificativa(float $justificativa): static
     {
         $this->justificativa = $justificativa;
-
         return $this;
     }
 
-    public function getObjetivos(): ?string
+    public function getObjetivos(): ?float
     {
         return $this->objetivos;
     }
 
-    public function setObjetivos(string $objetivos): static
+    public function setObjetivos(float $objetivos): static
     {
         $this->objetivos = $objetivos;
-
         return $this;
     }
 
-    public function getProblematizacao(): ?string
+    public function getProblematizacao(): ?float
     {
         return $this->problematizacao;
     }
 
-    public function setProblematizacao(string $problematizacao): static
+    public function setProblematizacao(float $problematizacao): static
     {
         $this->problematizacao = $problematizacao;
-
         return $this;
     }
 
-    public function getHipotese(): ?string
+    public function getHipotese(): ?float
     {
         return $this->hipotese;
     }
 
-    public function setHipotese(string $hipotese): static
+    public function setHipotese(float $hipotese): static
     {
         $this->hipotese = $hipotese;
-
         return $this;
     }
 
-    public function getMetodologia(): ?string
+    public function getMetodologia(): ?float
     {
         return $this->metodologia;
     }
 
-    public function setMetodologia(string $metodologia): static
+    public function setMetodologia(float $metodologia): static
     {
         $this->metodologia = $metodologia;
-
         return $this;
     }
 
-    public function getRevisaoBibliografica(): ?string
+    public function getRevisaoBibliografica(): ?float
     {
-        return $this->revisao_bibliografica;
+        return $this->revisaoBibliografica;
     }
 
-    public function setRevisaoBibliografica(string $revisao_bibliografica): static
+    public function setRevisaoBibliografica(float $revisaoBibliografica): static
     {
-        $this->revisao_bibliografica = $revisao_bibliografica;
-
+        $this->revisaoBibliografica = $revisaoBibliografica;
         return $this;
     }
 
-    public function getAspectosQualitativos(): ?string
+    public function getAspectosQualitativos(): ?float
     {
-        return $this->aspectos_qualitativos;
+        return $this->aspectosQualitativos;
     }
 
-    public function setAspectosQualitativos(string $aspectos_qualitativos): static
+    public function setAspectosQualitativos(float $aspectosQualitativos): static
     {
-        $this->aspectos_qualitativos = $aspectos_qualitativos;
-
+        $this->aspectosQualitativos = $aspectosQualitativos;
         return $this;
     }
 
-    public function getConsonaciaPlano(): ?string
+    public function getConsonanciaPlano(): ?string
     {
-        return $this->consonacia_plano;
+        return $this->consonanciaPlano;
     }
 
-    public function setConsonaciaPlano(string $consonacia_plano): static
+    public function setConsonanciaPlano(string $consonanciaPlano): static
     {
-        $this->consonacia_plano = $consonacia_plano;
-
+        $this->consonanciaPlano = $consonanciaPlano;
         return $this;
     }
 
     public function getJustificativaConsonancia(): ?string
     {
-        return $this->justificativa_consonancia;
+        return $this->justificativaConsonancia;
     }
 
-    public function setJustificativaConsonancia(?string $justificativa_consonancia): static
+    public function setJustificativaConsonancia(?string $justificativaConsonancia): static
     {
-        $this->justificativa_consonancia = $justificativa_consonancia;
-
+        $this->justificativaConsonancia = $justificativaConsonancia;
         return $this;
     }
 
     public function getConsideracoesFinais(): ?string
     {
-        return $this->consideracoes_finais;
+        return $this->consideracoesFinais;
     }
 
-    public function setConsideracoesFinais(?string $consideracoes_finais): static
+    public function setConsideracoesFinais(?string $consideracoesFinais): static
     {
-        $this->consideracoes_finais = $consideracoes_finais;
-
+        $this->consideracoesFinais = $consideracoesFinais;
         return $this;
     }
 
-    public function getNotaFinal(): ?string
+    public function getNotaFinal(): ?float
     {
-        return $this->nota_final;
+        return $this->notaFinal;
     }
 
-    public function setNotaFinal(string $nota_final): static
+    public function setNotaFinal(float $notaFinal): static
     {
-        $this->nota_final = $nota_final;
-
+        $this->notaFinal = $notaFinal;
         return $this;
     }
 }

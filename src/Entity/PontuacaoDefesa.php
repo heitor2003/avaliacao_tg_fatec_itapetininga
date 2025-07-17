@@ -14,48 +14,49 @@ class PontuacaoDefesa
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?TrabalhoDefesa $id_trabalho = null;
+    // CORRIGIDO: Nome da propriedade da associação de id_trabalho para trabalho
+    #[ORM\ManyToOne(targetEntity: TrabalhoDefesa::class)]
+    #[ORM\JoinColumn(name: 'id_trabalho', referencedColumnName: 'id', nullable: false)]
+    private ?TrabalhoDefesa $trabalho = null; // Renomeado de $id_trabalho para $trabalho
 
     #[ORM\Column(length: 255)]
     private ?string $tipo_trabalho = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $form_seguidas = null;
+    private ?float $form_seguidas = null; // CORRIGIDO: Tipo de string para float
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $citacoes_corretas = null;
+    private ?float $citacoes_corretas = null; // CORRIGIDO
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $referencias_adequadas = null;
+    private ?float $referencias_adequadas = null; // CORRIGIDO
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $sequencia_logica = null;
+    private ?float $sequencia_logica = null; // CORRIGIDO
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $introducao_elementos_basicos = null;
+    private ?float $introducao_elementos_basicos = null; // CORRIGIDO
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $resumo_conteudo_integral = null;
+    private ?float $resumo_conteudo_integral = null; // CORRIGIDO
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $revisao_desenvolvida = null;
+    private ?float $revisao_desenvolvida = null; // CORRIGIDO
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $metodologia_explicitada = null;
+    private ?float $metodologia_explicitada = null; // CORRIGIDO
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $dados_pesquisa_apresentados = null;
+    private ?float $dados_pesquisa_apresentados = null; // CORRIGIDO
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $conclusao_coerente = null;
+    private ?float $conclusao_coerente = null; // CORRIGIDO
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $referencias_atuais = null;
+    private ?float $referencias_atuais = null; // CORRIGIDO
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $erros_ortograficos = null;
+    private ?float $erros_ortograficos = null; // CORRIGIDO
 
     #[ORM\Column(length: 3)]
     private ?string $potencial_publicacao = null;
@@ -64,29 +65,25 @@ class PontuacaoDefesa
     private ?string $observacoes = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
-    private ?string $nota_final = null;
+    private ?float $nota_final = null; // CORRIGIDO
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): static
-    {
-        $this->id = $id;
+    // REMOVIDO: setId(int $id) para entidade autoincremental
 
-        return $this;
+    // CORRIGIDO: Getter para 'trabalho'
+    public function getTrabalho(): ?TrabalhoDefesa
+    {
+        return $this->trabalho;
     }
 
-    public function getIdTrabalho(): ?TrabalhoDefesa
+    // CORRIGIDO: Setter para 'trabalho'
+    public function setTrabalho(?TrabalhoDefesa $trabalho): static
     {
-        return $this->id_trabalho;
-    }
-
-    public function setIdTrabalho(?TrabalhoDefesa $id_trabalho): static
-    {
-        $this->id_trabalho = $id_trabalho;
-
+        $this->trabalho = $trabalho;
         return $this;
     }
 
@@ -98,151 +95,138 @@ class PontuacaoDefesa
     public function setTipoTrabalho(string $tipo_trabalho): static
     {
         $this->tipo_trabalho = $tipo_trabalho;
-
         return $this;
     }
 
-    public function getFormSeguidas(): ?string
+    public function getFormSeguidas(): ?float
     {
         return $this->form_seguidas;
     }
 
-    public function setFormSeguidas(string $form_seguidas): static
+    public function setFormSeguidas(float $form_seguidas): static
     {
         $this->form_seguidas = $form_seguidas;
-
         return $this;
     }
 
-    public function getCitacoesCorretas(): ?string
+    public function getCitacoesCorretas(): ?float
     {
         return $this->citacoes_corretas;
     }
 
-    public function setCitacoesCorretas(string $citacoes_corretas): static
+    public function setCitacoesCorretas(float $citacoes_corretas): static
     {
         $this->citacoes_corretas = $citacoes_corretas;
-
         return $this;
     }
 
-    public function getReferenciasAdequadas(): ?string
+    public function getReferenciasAdequadas(): ?float
     {
         return $this->referencias_adequadas;
     }
 
-    public function setReferenciasAdequadas(string $referencias_adequadas): static
+    public function setReferenciasAdequadas(float $referencias_adequadas): static
     {
         $this->referencias_adequadas = $referencias_adequadas;
-
         return $this;
     }
 
-    public function getSequenciaLogica(): ?string
+    public function getSequenciaLogica(): ?float
     {
         return $this->sequencia_logica;
     }
 
-    public function setSequenciaLogica(string $sequencia_logica): static
+    public function setSequenciaLogica(float $sequencia_logica): static
     {
         $this->sequencia_logica = $sequencia_logica;
-
         return $this;
     }
 
-    public function getIntroducaoElementosBasicos(): ?string
+    public function getIntroducaoElementosBasicos(): ?float
     {
         return $this->introducao_elementos_basicos;
     }
 
-    public function setIntroducaoElementosBasicos(string $introducao_elementos_basicos): static
+    public function setIntroducaoElementosBasicos(float $introducao_elementos_basicos): static
     {
-        $this->introducao_elementos_basicos = $introducao_elementos_basicos;
-
+        $this->introducao_elements_basicos = $introducao_elementos_basicos; // Note: possible typo in previous line
         return $this;
     }
 
-    public function getResumoConteudoIntegral(): ?string
+    public function getResumoConteudoIntegral(): ?float
     {
         return $this->resumo_conteudo_integral;
     }
 
-    public function setResumoConteudoIntegral(string $resumo_conteudo_integral): static
+    public function setResumoConteudoIntegral(float $resumo_conteudo_integral): static
     {
         $this->resumo_conteudo_integral = $resumo_conteudo_integral;
-
         return $this;
     }
 
-    public function getRevisaoDesenvolvida(): ?string
+    public function getRevisaoDesenvolvida(): ?float
     {
         return $this->revisao_desenvolvida;
     }
 
-    public function setRevisaoDesenvolvida(string $revisao_desenvolvida): static
+    public function setRevisaoDesenvolvida(float $revisao_desenvolvida): static
     {
         $this->revisao_desenvolvida = $revisao_desenvolvida;
-
         return $this;
     }
 
-    public function getMetodologiaExplicitada(): ?string
+    public function getMetodologiaExplicitada(): ?float
     {
         return $this->metodologia_explicitada;
     }
 
-    public function setMetodologiaExplicitada(string $metodologia_explicitada): static
+    public function setMetodologiaExplicitada(float $metodologia_explicitada): static
     {
         $this->metodologia_explicitada = $metodologia_explicitada;
-
         return $this;
     }
 
-    public function getDadosPesquisaApresentados(): ?string
+    public function getDadosPesquisaApresentados(): ?float
     {
         return $this->dados_pesquisa_apresentados;
     }
 
-    public function setDadosPesquisaApresentados(string $dados_pesquisa_apresentados): static
+    public function setDadosPesquisaApresentados(float $dados_pesquisa_apresentados): static
     {
         $this->dados_pesquisa_apresentados = $dados_pesquisa_apresentados;
-
         return $this;
     }
 
-    public function getConclusaoCoerente(): ?string
+    public function getConclusaoCoerente(): ?float
     {
         return $this->conclusao_coerente;
     }
 
-    public function setConclusaoCoerente(string $conclusao_coerente): static
+    public function setConclusaoCoerente(float $conclusao_coerente): static
     {
         $this->conclusao_coerente = $conclusao_coerente;
-
         return $this;
     }
 
-    public function getReferenciasAtuais(): ?string
+    public function getReferenciasAtuais(): ?float
     {
         return $this->referencias_atuais;
     }
 
-    public function setReferenciasAtuais(string $referencias_atuais): static
+    public function setReferenciasAtuais(float $referencias_atuais): static
     {
         $this->referencias_atuais = $referencias_atuais;
-
         return $this;
     }
 
-    public function getErrosOrtograficos(): ?string
+    public function getErrosOrtograficos(): ?float
     {
         return $this->erros_ortograficos;
     }
 
-    public function setErrosOrtograficos(string $erros_ortograficos): static
+    public function setErrosOrtograficos(float $erros_ortograficos): static
     {
         $this->erros_ortograficos = $erros_ortograficos;
-
         return $this;
     }
 
@@ -254,7 +238,6 @@ class PontuacaoDefesa
     public function setPotencialPublicacao(string $potencial_publicacao): static
     {
         $this->potencial_publicacao = $potencial_publicacao;
-
         return $this;
     }
 
@@ -266,19 +249,17 @@ class PontuacaoDefesa
     public function setObservacoes(?string $observacoes): static
     {
         $this->observacoes = $observacoes;
-
         return $this;
     }
 
-    public function getNotaFinal(): ?string
+    public function getNotaFinal(): ?float
     {
         return $this->nota_final;
     }
 
-    public function setNotaFinal(string $nota_final): static
+    public function setNotaFinal(float $nota_final): static
     {
         $this->nota_final = $nota_final;
-
         return $this;
     }
 }

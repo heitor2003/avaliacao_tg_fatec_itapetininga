@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\PontuacaoQuali;
 use App\Entity\TrabalhoQuali;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class AvalQualiController extends AbstractController
 {
@@ -22,6 +23,7 @@ class AvalQualiController extends AbstractController
     }
 
     #[Route('/avaliacoes-qualificacao', name: 'app_aval_quali')]
+    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         $avaliacoesQuali = [];
@@ -34,7 +36,7 @@ class AvalQualiController extends AbstractController
                 ->select(
                     'pq.id',
                     't.titulo',
-                    'pq.tipoTrabalho AS tipo_trabalho',
+                    'pq.tipoTrabalho AS tipo_trabalho', // CORRIGIDO: Referencia a propriedade camelCase da entidade
                     'pq.capa',
                     'pq.folhaDeRosto AS folha_de_rosto',
                     'pq.sumario',

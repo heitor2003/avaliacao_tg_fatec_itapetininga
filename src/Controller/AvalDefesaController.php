@@ -34,21 +34,21 @@ class AvalDefesaController extends AbstractController
                 ->select(
                     'pd.id',
                     't.titulo',
-                    'pd.tipoTrabalho AS tipo_trabalho',
-                    'pd.citacoesCorretas AS citacoes_corretas',
-                    'pd.referenciasAdequadas AS referencias_adequadas',
-                    'pd.sequenciaLogica AS sequencia_logica',
-                    'pd.introducaoElementosBasicos AS introducao_elementos_basicos',
-                    'pd.resumoConteudoIntegral AS resumo_conteudo_integral',
-                    'pd.revisaoDesenvolvida AS revisao_desenvolvida',
-                    'pd.metodologiaExplicitada AS metodologia_explicitada',
-                    'pd.dadosPesquisaApresentados AS dados_pesquisa_apresentados',
-                    'pd.conclusaoCoerente AS conclusao_coerente',
-                    'pd.referenciasAtuais AS referencias_atuais',
-                    'pd.errosOrtograficos AS erros_ortograficos',
-                    'pd.potencialPublicacao AS potencial_publicacao',
+                    'pd.tipo_trabalho',
+                    'pd.citacoes_corretas',
+                    'pd.referencias_adequadas',
+                    'pd.sequencia_logica',
+                    'pd.introducao_elementos_basicos',
+                    'pd.resumo_conteudo_integral',
+                    'pd.revisao_desenvolvida',
+                    'pd.metodologia_explicitada',
+                    'pd.dados_pesquisa_apresentados',
+                    'pd.conclusao_coerente',
+                    'pd.referencias_atuais',
+                    'pd.erros_ortograficos',
+                    'pd.potencial_publicacao',
                     'pd.observacoes',
-                    'pd.notaFinal AS nota_final'
+                    'pd.nota_final'
                 )
                 ->join('pd.trabalho', 't')
                 ->orderBy('t.titulo', 'ASC');
