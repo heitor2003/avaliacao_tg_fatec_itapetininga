@@ -1,0 +1,3 @@
+knpu_oauth2_client_connect:
+    path: /connect/{clientKey}
+    controller: KnpU\OAuth2ClientBundle\Controller\ConnectController::connectAction

@@ -1,63 +1,53 @@
 # config/packages/security.yaml
 security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
         App\Entity\User:
             algorithm: auto
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+
     providers:
-        # 1. Definição do seu provedor de usuário principal
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
-        # O provedor 'users_in_memory' não é mais necessário se você usa 'app_user_provider'
-        # users_in_memory: { memory: null } # <-- Removido ou comentado se não for usado
 
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        main: # <-- Este é o seu firewall 'main' principal
+        main:
             lazy: true
-            # AQUI: O 'provider' deve ser APENAS o NOME do provedor definido acima
-            provider: app_user_provider # CORRIGIDO: Agora é um escalar (o nome do provedor)
+            provider: app_user_provider
 
-            # Configurações de autenticação e logout para este firewall
+            # ✅ Autenticadores (formulário + Google OAuth2)
+            custom_authenticators:
+                - App\Security\GoogleAuthenticator
+
             form_login:
                 login_path: app_login
                 check_path: app_login
-                default_target_path: app_dashboard # Redireciona para o dashboard após o login
-                # Opcional: Ativar proteção CSRF para o formulário de login
-                # enable_csrf: true
+                default_target_path: app_dashboard
 
             logout:
                 path: app_logout
                 target: app_login
-            custom_authenticators:
-                - App\Security\GoogleAuthenticator
-            
+
             entry_point: form_login
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true # <-- Opcional, se precisar de impersonação
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
     access_control:
+        # ✅ Áreas públicas
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/cadastro, roles: PUBLIC_ACCESS }
+        - { path: ^/connect, roles: PUBLIC_ACCESS } # ⚠️ necessário para rotas do Google OAuth
+
+        # ✅ Áreas protegidas
         - { path: ^/dashboard, roles: ROLE_USER }
         - { path: ^/avaliacoes-defesa, roles: ROLE_USER }
         - { path: ^/avaliacoes-qualificacao, roles: ROLE_USER }
         - { path: ^/defesa-form, roles: ROLE_USER }
         - { path: ^/quali-form, roles: ROLE_USER }
         - { path: ^/inserir-trabalho, roles: ROLE_USER }
-        
-# A seção 'main' duplicada/mal posicionada abaixo foi removida daqui.
-# Ela foi incorporada ao firewall 'main' principal acima.
 
 when@test:
     security:
